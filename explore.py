@@ -31,7 +31,16 @@ class divideMultiplyThing:
 		return(subject / self.partcular_number)
 	def multiplyBy(self, subject):
 		return(subject * self.partcular_number)
-
+	
+class addSubtractThing:
+	"""To return functions alreeady set up to add / subtract a particaulr number, entered in init"""
+	def __init__(self, n):
+		self.partcular_number = n
+	def add_to(self, subject):
+		return(subject + self.partcular_number)
+	def subtract_from(self, subject):
+		return(subject - self.partcular_number)
+	
 def make_power(thing):
 	return(pow(10,thing))
 
@@ -41,9 +50,12 @@ def test_transformers():
 	assert (take_logarithm_of_2(8) == 3)
 	assert (convert_to_string(10) == "10")
 	assert (convert_to_int("0100") == 100)
-	d = divideMultiplyThing(5)
-	assert (d.divideBy(10) == 2)
-	assert (d.multiplyBy(10) == 50)
+	d_thing = divideMultiplyThing(5)
+	assert (d_thing.divideBy(10) == 2)
+	assert (d_thing.multiplyBy(10) == 50)
+	as_thing = addSubtractThing(22)
+	assert (as_thing.add_to(10) == 32)
+	assert (as_thing.subtract_from(32) == 10)
 	
 test_transformers()
 
@@ -51,6 +63,8 @@ test_transformers()
 
 def get_int_range_around_0(size, steps=0)->list:
 	"""Returns a list of ints from - to + size, in specified no. of gaps (so returns one more entry)"""
+	if (size == 0):
+		return[0]
 	if (steps == 0): #also default
 		steps = size
 	return list(range(-size,size+1,int(2*size/steps)))
@@ -161,6 +175,23 @@ def look_for_oddness_in_precision():
 		for item in test_points:
 			testIdentity(item)
 			#print(testIdentity(item))
-
-look_for_oddness_in_precision()	
+			
+def look_for_oddness_in_addition():
+	"""Runs a bunch of tests looking at add/subtract - note double-depth"""
+	# hard to find a range which doesn't fail!
+	my_range = 2
+	multiple = 4 #to avoid 1 in everything
+	big_test_points = get_int_range_around_0(my_range)
+	for item in big_test_points:
+		target = multiple*math.pow(10,-item)
+		as_thing = addSubtractThing(target)
+		testIdentity = make_robust_test( as_thing.add_to, as_thing.subtract_from)
+		
+		test_points = get_int_range_around_0(my_range)
+		for item in test_points:
+			for mult in range(1,9):
+				testIdentity(mult*math.pow(10,-item))
+				#pri	nt(testIdentity(item))
+			
+look_for_oddness_in_addition()	
 	
