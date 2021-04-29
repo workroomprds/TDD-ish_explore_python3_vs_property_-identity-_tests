@@ -84,7 +84,7 @@ test_generators()
 #---
 	
 def make_test(do_something, reverse_something):
-	"""Returns a function which, given a value, checks that two functions work together to rethrn the value to its starting state"""
+	"""Returns a function which, given a value, checks that two functions work together to rethrn the value to its starting state - and if they don't, stops"""
 	def test_identity(original):
 		transformed = do_something(original)
 		reverted_to_original = reverse_something(transformed)
@@ -92,6 +92,18 @@ def make_test(do_something, reverse_something):
 		assert original == reverted_to_original , message
 		return message
 
+	return test_identity
+
+def make_robust_test(do_something, reverse_something):
+	"""Returns a function which, given a value, checks that two functions work together to rethrn the value to its starting state - and if they don't, prints something"""
+	def test_identity(original):
+		transformed = do_something(original)
+		reverted_to_original = reverse_something(transformed)
+		message = " : ".join([str(original), str(transformed), str(reverted_to_original), str(original == reverted_to_original)])
+		if (original != reverted_to_original):
+			print( message )
+		return message
+	
 	return test_identity
 
 def test_checker():
@@ -119,36 +131,36 @@ test_checker()
 def look_for_oddness_in_powers_of_two():
 	"""Runs a bunch of tests looking at powers of two in order to look at very large numbers"""
 	testIdentity = make_test(raise_two_to_the_power_of, take_logarithm_of_2)
-	test_points = get_int_range_around_0(1000, 20)
+	test_points = get_int_range_around_0(1100, 20)
 	for item in test_points:
 		print(testIdentity(item))
 
 def look_for_oddness_in_conversions():
 	"""Runs a bunch of tests to look at converting to / from ints, floats and strings"""
 	testIdentity = make_test(convert_to_string, convert_to_int)
-	test_points = get_int_range_around_0(9999999999999999999999, 20)
+	#test_points = get_int_range_around_0(100, 20)
 	#Next thing here, to get moving
-	#edges = 1E20
-	#test_points = get_a_bunch_of_random_ints(100, -edges, 2*edges )
+	edges = 1E320
+	test_points = get_a_bunch_of_random_ints(10, -edges, 2*edges )
 	
 	for item in test_points:
 		print(testIdentity(item))
 		
 def look_for_oddness_in_precision():
 	"""Runs a bunch of tests looking at divide and multiply (in that order) - note double-depth"""
-	big_test_points = get_int_range_from_0(1000)
-	for item in big_test_points:
+	big_test_points = get_int_range_from_0(200)
+	for itema in big_test_points:
+		item = itema
 		print(item)
 		if (item == 0):
 			item = 1
 		d = divideMultiplyThing(item)
-		testIdentity = make_test( d.divideBy, d.multiplyBy)
+		testIdentity = make_robust_test( d.divideBy, d.multiplyBy)
 		
-		test_points = get_int_range_around_0(1000)
+		test_points = get_int_range_around_0(200)
 		for item in test_points:
 			testIdentity(item)
 			#print(testIdentity(item))
 
-look_for_oddness_in_precision()
-	
+look_for_oddness_in_precision()	
 	
