@@ -1,6 +1,6 @@
 # Exploring the Python 3 interpreter with property (identity) tests
 
-Built for MoT's Exploratory testing week, APril 2021
+Built for MoT's Exploratory testing week, April 2021
 
 ## Idea
 
